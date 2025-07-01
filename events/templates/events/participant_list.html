@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Participant List{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
+</head>
+<body class="bg-gray-50">
+
+{% include "events/navbar.html" %}
+
+<div class="container mx-auto px-6 my-5">
+    <div class="bg-yellow-50 shadow rounded-lg p-6">
+
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold">Participant List</h1>
+            <a href="{% url 'participant_create' %}" 
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+               + Add Participant
+            </a>
+        </div>
+
+        <table class="min-w-full bg-white border border-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border px-4 py-2 text-left">Name</th>
+                    <th class="border px-4 py-2 text-left">Email</th>
+                    <th class="border px-4 py-2 text-left">Events</th>
+                    <th class="border px-4 py-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participant in participants %}
+                <tr class="hover:bg-gray-50">
+                    <td class="border px-4 py-2">{{ participant.name }}</td>
+                    <td class="border px-4 py-2">{{ participant.email }}</td>
+                    <td class="border px-4 py-2">
+                        {% if participant.events.all %}
+                            <ul class="list-disc ml-4">
+                                {% for event in participant.events.all %}
+                                    <li>{{ event.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            No Events
+                        {% endif %}
+                    </td>
+                    <td class="border px-4 py-2 space-x-2">
+                        <a href="{% url 'participant_update' participant.id %}" 
+                           class="text-green-600 hover:underline">Edit</a>
+                        <a href="{% url 'participant_delete' participant.id %}" 
+                           class="text-red-600 hover:underline">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4">No participants found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% include "events/footer.html" %}
+
+</body>
+</html>

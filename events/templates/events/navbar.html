@@ -12,9 +12,9 @@
         <div class="space-x-6">
             <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a>
             <a href="{% url "event_list" %}" class="hover:text-blue-600">Events</a>
-            <a class="hover:text-blue-600">Participants</a>
-            <a class="hover:text-blue-600">Categories</a>
-            <a href='{% url "dashboard" %}' class="hover:text-blue-600">Dashboard</a>
+            <a href="{% url "participant_list" %}" class="hover:text-blue-600">Participants</a>
+            <a href="{% url "category_list" %}" class="hover:text-blue-600">Categories</a>
+            <a href="{% url "dashboard" %}" class="hover:text-blue-600">Dashboard</a>
         </div>
     </div>
 </nav>
