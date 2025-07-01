@@ -20,4 +20,5 @@ urlpatterns = [
     path('categories/<int:id>/edit/',category_update, name='category_update'),
     path('categories/<int:id>/delete/',category_delete, name='category_delete'),
 
+
 ]

@@ -77,29 +77,60 @@ def event_delete(request, id):
     return render(request, 'events/event_confirm_delete.html', {'event': event})
 
 def dashboard(request):
+    type = request.GET.get('type', 'all')  
+
     today = timezone.now().date()
-    events = Event.objects.select_related('category').prefetch_related('participants').all()
 
+   
+    counts = {
+        'events': Event.objects.aggregate(
+            total=Count('id'),
+            upcoming=Count('id', filter=Q(date__gte=today)),
+            past=Count('id', filter=Q(date__lt=today)),
+        ),
+        'participants': Participant.objects.aggregate(total=Count('id')),
+        'categories': Category.objects.aggregate(total=Count('id')),
+    }
 
-    print(events)
-    total_events = Event.objects.count()
-    total_participants = Participant.objects.count()
-    total_categoris = Category.objects.count() 
+    
+    event_query = Event.objects.select_related('category').prefetch_related('participants')
+    participant_query = Participant.objects.all()
+    category_query = Category.objects.all()
 
-    upcoming_events_count = Event.objects.filter(date__gte=today).count()
-    past_events_count = Event.objects.filter(date__lt=today).count()
+  
+    data = None
+    data_type = ''
 
-    todays_events = Event.objects.filter(date=today).select_related('category').prefetch_related('participants')
+    if type == 'events':
+        data = event_query.all()
+        data_type = 'events'
+
+    elif type == 'upcoming':
+        data = event_query.filter(date__gte=today)
+        data_type = 'upcoming_events'
+
+    elif type == 'past':
+        data = event_query.filter(date__lt=today)
+        data_type = 'past_events'
+
+    elif type == 'participants':
+        data = participant_query
+        data_type = 'participants'
+
+    elif type == 'categories':
+        data = category_query
+        data_type = 'categories'
+
+    else:
+        data = event_query.all()
+        data_type = 'events'  
 
     context = {
-        'total_events': total_events,
-        'total_participants': total_participants,
-        'upcoming_events': upcoming_events_count,
-        'past_events': past_events_count,
-        'todays_events': todays_events,
-        'events':events,
-        'total_categoris':total_categoris
+        'counts': counts,
+        'data': data,
+        'data_type': data_type,
     }
+
     return render(request, 'events/dashboard.html', context)
 
 
