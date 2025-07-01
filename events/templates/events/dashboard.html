@@ -1,0 +1,133 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Event Manager</title>
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
+</head>
+<body class="bg-gray-50">
+
+
+{% include "events/navbar.html" %}
+
+
+<section class="py-8">
+    <div class="container mx-auto px-6">
+        <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+            <a href="?filter=all" class="bg-white p-4 rounded shadow hover:bg-blue-50">
+                <h3 class="text-gray-500">Total Events</h3>
+                <p class="text-2xl font-bold">{{ total_events }}</p>
+            </a>
+            <a href="?filter=upcoming" class="bg-white p-4 rounded shadow hover:bg-blue-50">
+                <h3 class="text-gray-500">Upcoming Events</h3>
+                <p class="text-2xl font-bold">{{ upcoming_events_count }}</p>
+            </a>
+            <a href="?filter=past" class="bg-white p-4 rounded shadow hover:bg-blue-50">
+                <h3 class="text-gray-500">Past Events</h3>
+                <p class="text-2xl font-bold">{{ past_events_count }}</p>
+            </a>
+            <div class="bg-white p-4 rounded shadow">
+                <h3 class="text-gray-500">Participants</h3>
+                <p class="text-2xl font-bold">{{ total_participants }}</p>
+            </div>
+            <div class="bg-white p-4 rounded shadow">
+                <h3 class="text-gray-500">Categories</h3>
+                <p class="text-2xl font-bold">{{ total_categoris }}</p>
+            </div>
+        </div>
+
+        <!-- 🔥 Events CRUD -->
+        <div class="mb-10">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Events</h2>
+                <a href="{% url 'event_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    + Add Event
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for event in events %}
+                <div class="bg-white rounded shadow p-4">
+                    <h3 class="text-xl font-semibold">{{ event.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ event.date }} at {{ event.time }}</p>
+                    <p class="text-sm">Location: {{ event.location }}</p>
+                    <p class="text-sm">Category: {{ event.category.name }}</p>
+                    <p class="text-sm">Participants: {{ event.participants.count }}</p>
+                    <div class="flex space-x-2 mt-3">
+                        <a href="{% url 'event_update' event.pk %}" class="text-blue-600">Edit</a>
+                        <a href="{% url 'event_delete' event.pk %}" class="text-red-600">Delete</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No events found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 🔥 Participants CRUD -->
+        <div class="mb-10">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Participants</h2>
+                <a href="{% url 'participant_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    + Add Participant
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for participant in participants %}
+                <div class="bg-white rounded shadow p-4">
+                    <h3 class="text-xl font-semibold">{{ participant.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ participant.email }}</p>
+                    <p class="text-sm">Events: {{ participant.events.count }}</p>
+                    <div class="flex space-x-2 mt-3">
+                        <a href="{% url 'participant_update' participant.pk %}" class="text-blue-600">Edit</a>
+                        <a href="{% url 'participant_delete' participant.pk %}" class="text-red-600">Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 🔥 Categories CRUD -->
+        <div class="mb-10">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Categories</h2>
+                <a href="{% url 'category_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    + Add Category
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for category in categories %}
+                <div class="bg-white rounded shadow p-4">
+                    <h3 class="text-xl font-semibold">{{ category.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ category.description }}</p>
+                    <p class="text-sm">Events: {{ category.event_count }}</p>
+                    <div class="flex space-x-2 mt-3">
+                        <a href="{% url 'category_update' category.pk %}" class="text-blue-600">Edit</a>
+                        <a href="{% url 'category_delete' category.pk %}" class="text-red-600">Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- 🔷 Footer -->
+<footer class="bg-white border-t">
+    <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500">&copy; 2025 EventManager. All rights reserved.</p>
+        <div class="space-x-4">
+            <a href="#" class="text-gray-500 hover:text-blue-600">Privacy</a>
+            <a href="#" class="text-gray-500 hover:text-blue-600">Terms</a>
+            <a href="#" class="text-gray-500 hover:text-blue-600">Contact</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
