@@ -1,12 +1,10 @@
-
-
 from django import forms
-from events.models import Event,Participant,Category
+from events.models import Event, Category
 
 
 class EventForm(forms.ModelForm):
     class Meta:
-        model=Event
+        model = Event
         fields = ['name', 'description', 'date', 'time', 'location', 'category']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter event name', 'class': 'w-full border rounded px-3 py-2'}),
@@ -17,15 +15,6 @@ class EventForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'w-full border rounded px-3 py-2'}),
         }
 
-class ParticipantForm(forms.ModelForm):
-    class Meta:
-        model=Participant
-        fields = ['name', 'email', 'events']
-        widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Enter participant name', 'class': 'w-full border rounded px-3 py-2'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Enter participant email', 'class': 'w-full border rounded px-3 py-2'}),
-            'events': forms.SelectMultiple(attrs={'class': 'w-full border rounded px-3 py-2'}),
-        }
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -35,4 +24,3 @@ class CategoryForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'placeholder': 'Enter category name', 'class': 'w-full border rounded px-3 py-2'}),
             'description': forms.Textarea(attrs={'placeholder': 'Enter category description', 'class': 'w-full border rounded px-3 py-2', 'rows': 3}),
         }
-

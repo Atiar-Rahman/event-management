@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'events',
+    'users',
     "debug_toolbar"
 ]
 
@@ -85,25 +86,25 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 
 # postgress database connect
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'event-management',
-#         'USER': 'postgres',
-#         'PASSWORD': '1234',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'event-management',
+        'USER': 'postgres',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
 # Database documentation https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://event_management_db_6tv0_user:WVSVPpisUXAjsbJG8VFipBszqWIOdlyV@dpg-d1i2qpi4d50c73ek1930-a.oregon-postgres.render.com/event_management_db_6tv0',
-        conn_max_age=600
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://event_management_db_6tv0_user:WVSVPpisUXAjsbJG8VFipBszqWIOdlyV@dpg-d1i2qpi4d50c73ek1930-a.oregon-postgres.render.com/event_management_db_6tv0',
+#         conn_max_age=600
+#     )
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -143,6 +144,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS=[
     BASE_DIR/'static'
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
