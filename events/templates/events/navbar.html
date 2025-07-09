@@ -16,6 +16,12 @@
             <a href="{% url "category_list" %}" class="hover:text-blue-600">Categories</a>
             <a href="{% url "dashboard" %}" class="hover:text-blue-600">Dashboard</a>
         </div>
+        <div>
+            <form action="{% url 'logout' %}" method='post'>
+                {% csrf_token %}
+                <button type='submit'>logout</button>
+            </form>
+        </div>
     </div>
 </nav>
 </body>
