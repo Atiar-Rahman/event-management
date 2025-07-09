@@ -28,6 +28,11 @@
                 <a href="{% url 'sign-up' %}" class="hover:text-blue-600">Register</a>
             {% endif %}
         </div>
+        <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="text-red-600">Logout</button>
+    </form>
+
     </div>
 </nav>
 
