@@ -21,11 +21,6 @@
                 <p class="text-2xl font-bold">{{ counts.events.total }}</p>
             </a>
 
-            <a href="?type=participants" class="bg-white p-4 rounded shadow hover:bg-blue-50 block">
-                <h3 class="text-gray-500">Participants</h3>
-                <p class="text-2xl font-bold">{{ counts.participants.total }}</p>
-            </a>
-
             <a href="?type=categories" class="bg-white p-4 rounded shadow hover:bg-blue-50 block">
                 <h3 class="text-gray-500">Categories</h3>
                 <p class="text-2xl font-bold">{{ counts.categories.total }}</p>
@@ -64,28 +59,6 @@
                     </div>
                     {% empty %}
                     <p>No events found.</p>
-                    {% endfor %}
-                </div>
-
-            {% elif data_type == "participants" %}
-                <div class="flex justify-between mb-4">
-                    <h2 class="text-xl font-semibold">Participants</h2>
-                    <a href="{% url 'participant_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                        + Add Participant
-                    </a>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% for p in data %}
-                    <div class="bg-white p-4 rounded shadow">
-                        <h3 class="text-lg font-bold">{{ p.name }}</h3>
-                        <p class="text-sm text-gray-600">{{ p.email }}</p>
-                        <div class="mt-2 flex gap-2">
-                            <a href="{% url 'participant_update' p.id %}" class="text-yellow-600 hover:underline mr-4 bg-blue-500 py-2 px-4 my-5 rounded-lg">Edit</a>
-                            <a href="{% url 'participant_delete' p.id %}" class="text-red-600 hover:underline mr-4 bg-red-200 py-2 px-4 my-5 rounded-lg">Delete</a>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p>No participants found.</p>
                     {% endfor %}
                 </div>
 
