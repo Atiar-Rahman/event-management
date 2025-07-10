@@ -4,6 +4,7 @@ from events.views import *
 urlpatterns = [
     path('',home, name='home'),
     path('dashboard/',dashboard, name='dashboard'),
+    path('no-permession',no_permession,name='no-permession'),
     path('events/',event_list, name='event_list'),
     path('events/<int:id>/',event_detail, name='event_detail'),
     path('events/add/',event_create, name='event_create'),

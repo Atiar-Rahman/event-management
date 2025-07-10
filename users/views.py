@@ -36,7 +36,7 @@ def sign_in(request):
             return redirect('home')
    return render(request,'users/login.html',{'form':form})
 
-
+@login_required
 def user_logout(request):
    if request.method=='POST':
        logout(request)
@@ -56,12 +56,12 @@ def activate_user(request, user_id, token):
         return HttpResponse('user does not exist')
 
 
-
+@user_passes_test(is_admin,login_url='no-permession')
 def admin_dashboard(request):
     users = User.objects.all()
     return render(request,'admin/dashboard.html',{'users':users})
 
-
+@user_passes_test(is_admin,login_url='no-permession')
 def assign_role(request, user_id):
     user = User.objects.get(id=user_id)
     form = AssignRoleForm()
@@ -78,7 +78,7 @@ def assign_role(request, user_id):
     return render(request, 'admin/assign_role.html', {'form': form, 'user': user})
 
 
-
+@user_passes_test(is_admin,login_url='no-permession')
 def create_group(request):
     form = CreateGroupForm()
     if request.method == 'POST':
@@ -89,7 +89,7 @@ def create_group(request):
             return redirect('create-group')  # or to 'group-list', etc.
     return render(request, 'admin/creategroup.html', {'form': form})
 
-
+@user_passes_test(is_admin,login_url='no-permession')
 def group_list(request):
     groups = Group.objects.all()
 

@@ -4,7 +4,7 @@ from events.models import Event,Participant,Category
 from django.db.models import Q,Count
 from .forms import EventForm, ParticipantForm, CategoryForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test,permission_required
 # Create your views here.
 
 def is_user(user):
@@ -12,7 +12,6 @@ def is_user(user):
 
 def is_organizer(user):
     return user.groups.filter(name='organizer').exists()
-
 
 def home(request):
     events = Event.objects.select_related('category').prefetch_related('participants').all()
@@ -51,7 +50,7 @@ def event_detail(request, id):
 
     return render(request, 'events/event_detail.html', {'event': event})
 
-
+@permission_required('events.add_event',login_url='no-permession')
 def event_create(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -62,7 +61,7 @@ def event_create(request):
         form = EventForm()
     return render(request, 'events/event_form.html', {'form': form})
 
-
+@permission_required('events.change_event',login_url='no-permession')
 def event_update(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
@@ -74,7 +73,7 @@ def event_update(request, id):
         form = EventForm(instance=event)
     return render(request, 'events/event_form.html', {'form': form})
 
-
+@permission_required('events.delete_event',login_url='no-permession')
 def event_delete(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
@@ -82,7 +81,7 @@ def event_delete(request, id):
         return redirect('event_list')
     return render(request, 'events/event_confirm_delete.html', {'event': event})
 
-
+@permission_required('events.add_event',login_url='no-permession')
 def dashboard(request):
     type = request.GET.get('type', 'all')  
 
@@ -205,7 +204,7 @@ def category_detail(request, id):
 
 
 
-
+@permission_required('events.add_category',login_url='no-permession')
 def category_create(request):
    if request.method == 'POST':
        form = CategoryForm(request.POST)
@@ -216,7 +215,7 @@ def category_create(request):
        form = CategoryForm()
    return render(request, 'events/category_form.html', {'form': form})
 
-
+@permission_required('events.change_category',login_url='no-permession')
 def category_update(request, id):
    category = Category.objects.get(id=id)
    if request.method == 'POST':
@@ -229,10 +228,13 @@ def category_update(request, id):
    return render(request, 'events/category_form.html', {'form': form})
 
 
-
+@permission_required('events.delete_category',login_url='no-permession')
 def category_delete(request, id):
    category = Category.objects.get(id=id)
    if request.method == 'POST':
        category.delete()
        return redirect('category_list')
    return render(request, 'events/category_confirm_delete.html', {'category': category})
+
+def no_permession(request):
+    return render(request,'no_permession.html')
