@@ -4,8 +4,14 @@ from events.models import Event,Participant,Category
 from django.db.models import Q,Count
 from .forms import EventForm, ParticipantForm, CategoryForm
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.contrib.auth.decorators import user_passes_test
 # Create your views here.
+
+def is_user(user):
+    return user.groups.filter(name='user').exists()
+
+def is_organizer(user):
+    return user.groups.filter(name='organizer').exists()
 
 
 def home(request):
@@ -75,6 +81,7 @@ def event_delete(request, id):
         event.delete()
         return redirect('event_list')
     return render(request, 'events/event_confirm_delete.html', {'event': event})
+
 
 def dashboard(request):
     type = request.GET.get('type', 'all')  

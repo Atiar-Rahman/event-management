@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Permission,Group
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 
 
@@ -42,3 +42,32 @@ class LoginForm(AuthenticationForm):
            'class': 'w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500',
            'placeholder': 'Password'
        })
+
+
+class AssignRoleForm(forms.Form):
+    role = forms.ModelChoiceField(
+        queryset = Group.objects.all(),
+        empty_label='Select a Role',
+        widget=forms.Select(attrs={
+            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+        }),
+        label='Role'
+    )
+
+class CreateGroupForm(forms.ModelForm):
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget= forms.CheckboxSelectMultiple,
+        required = False,
+        label= 'Assign Permission'
+    )
+    class Meta:
+        model = Group
+        fields=['name','permissions']
+        
+        widgets={
+            'name':forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Enter group name'
+            })
+        }
