@@ -1,11 +1,14 @@
 from django.urls import path
 from events.views import *
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', home, name='home'),
     path('dashboard/', dashboard, name='dashboard'),
+    path('re-dashboard/', dashboard_redirect, name='dashboard_redirect'),
     path('no-permession', no_permession, name='no-permession'),
-
+    path('participant-dashboard/', participant_dashboard, name='participant-dashboard'),
     # Events
     path('events/', event_list, name='event_list'),
     path('events/<int:id>/', event_detail, name='event_detail'),
@@ -22,6 +25,9 @@ urlpatterns = [
     path('categories/<int:id>/edit/', category_update, name='category_update'),
     path('categories/<int:id>/delete/', category_delete, name='category_delete'),
 
-    # ✅ Participant Dashboard (NEW: shows RSVP'd events for logged-in user)
+    # Participant Dashboard (NEW: shows RSVP'd events for logged-in user)
     path('my-events/', my_rsvped_events, name='my-rsvped-events'),
 ]
+
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

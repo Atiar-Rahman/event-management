@@ -33,7 +33,7 @@ def sign_in(request):
        if form.is_valid():
             user = form.get_user()
             login(request,user)
-            return redirect('home')
+            return redirect('dashboard_redirect')
    return render(request,'users/login.html',{'form':form})
 
 @login_required

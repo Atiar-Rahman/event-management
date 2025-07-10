@@ -1,24 +1,27 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}navbar{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 <body>
     <nav class="bg-white shadow">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">EventOrganizer</a>
-        <div class="space-x-6">
+    <div class="container mx-auto  py-4 flex md:flex-col justify-around gap-7 items-center">
+        <a href="{% url 'home' %}" class="text-xl font-bold text-blue-600">EventOrganizer</a>
+        <div class="space-x-5">
             <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a>
             <a href="{% url "event_list" %}" class="hover:text-blue-600">Events</a>
             <a href="{% url "category_list" %}" class="hover:text-blue-600">Categories</a>
-            <a href="{% url "dashboard" %}" class="hover:text-blue-600">Dashboard</a>
+            <a href="{% url "dashboard" %}" class="hover:text-blue-600">Organizer-Dashboard</a>
+            <a href="{% url "participant-dashboard" %}" class="hover:text-blue-600">Participant-Dashboard</a>
         </div>
         <div>
             <form action="{% url 'logout' %}" method='post'>
                 {% csrf_token %}
-                <button type='submit'>logout</button>
+                <button type='submit' class='py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-100 hover:text-black'>logout</button>
             </form>
         </div>
     </div>

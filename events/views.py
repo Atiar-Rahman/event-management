@@ -51,7 +51,7 @@ def event_detail(request, id):
 @permission_required('events.add_event', login_url='no-permession')
 def event_create(request):
     if request.method == 'POST':
-        form = EventForm(request.POST)
+        form = EventForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return redirect('event_list')
@@ -197,3 +197,25 @@ def category_delete(request, id):
 # No permission page
 def no_permession(request):
     return render(request, 'no_permession.html')
+
+
+@login_required
+def participant_dashboard(request):
+    user = request.user
+    rsvped_events = user.rsvped_events.all()  #rsvped_events the related name m2m
+    return render(request, 'participant_dashboard.html', {'events': rsvped_events})
+
+
+
+
+@login_required
+def dashboard_redirect(request):
+    user = request.user
+
+    if user.groups.filter(name='admin').exists():
+        return redirect('admin-dashboard')
+    elif user.groups.filter(name='organizer').exists():
+        return redirect('dashboard')
+    else:
+        return redirect('participant-dashboard')
+    
