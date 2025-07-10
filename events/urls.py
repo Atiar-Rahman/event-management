@@ -18,6 +18,7 @@ urlpatterns = [
 
     # RSVP (based on User <-> Event M2M)
     path('events/<int:event_id>/rsvp/', rsvp_event, name='rsvp-event'),
+    path('cancel-rsvp/<int:event_id>/', cancel_rsvp, name='cancel-rsvp'),
 
     # Category
     path('categories/', category_list, name='category_list'),

@@ -1,8 +1,0 @@
-{% if user.is_authenticated %}
-  <form action="{% url 'rsvp-event' event.id %}" method="post">
-    {% csrf_token %}
-    <button class="bg-green-600 px-4 py-2 rounded text-white mt-4">RSVP</button>
-  </form>
-{% else %}
-  <p class="text-red-500 mt-4">Please <a href="{% url 'sign-in' %}" class="underline">sign in</a> to RSVP.</p>
-{% endif %}

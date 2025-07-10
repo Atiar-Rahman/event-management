@@ -150,6 +150,12 @@ def my_rsvped_events(request):
     rsvped_events = request.user.rsvped_events.all()
     return render(request, 'events/my_events.html', {'events': rsvped_events})
 
+@login_required
+def cancel_rsvp(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.user in event.participants.all():
+        event.participants.remove(request.user)
+    return redirect('participant-dashboard') 
 
 # Category list
 def category_list(request):
