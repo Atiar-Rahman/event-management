@@ -4,7 +4,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('', home, name='home'),
     path('dashboard/', dashboard, name='dashboard'),
     path('re-dashboard/', dashboard_redirect, name='dashboard_redirect'),
     path('no-permession', no_permession, name='no-permession'),
