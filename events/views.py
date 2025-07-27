@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from events.models import Event, Category
 from .forms import EventForm, CategoryForm
-
+from django.views.generic import ListView,DetailView
 # Group checkers (for RBAC)
 def is_user(user):
     return user.groups.filter(name='user').exists()
@@ -39,13 +39,44 @@ def event_list(request):
         events = events.filter(date__range=[start_date, end_date])
 
     return render(request, 'events/event_list.html', {'events': events})
+class EventListView(ListView):
+    model = Event
+    template_name = 'events/event_list.html'
+    context_object_name = 'events'
 
+    def get_queryset(self):
+        queryset = Event.objects.select_related('category').prefetch_related('participants').all()
+
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) | Q(location__icontains=search_query)
+            )
+
+        category_id = self.request.GET.get('category')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+        if start_date and end_date:
+            queryset = queryset.filter(date__range=[start_date, end_date])
+
+        return queryset
 
 # Event detail
 def event_detail(request, id):
     event = get_object_or_404(Event.objects.select_related('category').prefetch_related('participants'), id=id)
     return render(request, 'events/event_detail.html', {'event': event})
 
+class EventDetailView(DetailView):
+    model = Event
+    template_name = 'events/event_detail.html'
+    context_object_name = 'event'
+    pk_url_kwarg = 'id'
+
+    def get_queryset(self):
+        return Event.objects.select_related('category').prefetch_related('participants')
 
 # Event create
 @permission_required('events.add_event', login_url='no-permession')

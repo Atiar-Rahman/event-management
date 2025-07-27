@@ -10,8 +10,10 @@ urlpatterns = [
     path('no-permession', no_permession, name='no-permession'),
     path('participant-dashboard/', participant_dashboard, name='participant-dashboard'),
     # Events
-    path('events/', event_list, name='event_list'),
-    path('events/<int:id>/', event_detail, name='event_detail'),
+    # path('events/', event_list, name='event_list'),
+    path('events/', EventListView.as_view(), name='event_list'),
+    # path('events/<int:id>/', event_detail, name='event_detail'),
+    path('events/<int:id>/', EventDetailView.as_view(), name='event_detail'),
     path('events/add/', event_create, name='event_create'),
     path('events/<int:id>/edit/', event_update, name='event_update'),
     path('events/<int:id>/delete/', event_delete, name='event_delete'),
