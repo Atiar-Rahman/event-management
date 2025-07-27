@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="bg-white shadow">
-    <div class="container mx-auto  py-4 flex  justify-around gap-7 items-center">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-center gap-3 py-3 items-center">
         <a href="{% url 'home' %}" class="text-xl font-bold text-blue-600">EventOrganizer</a>
         <div class="space-x-5">
             <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a>
@@ -23,6 +23,7 @@
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-100 hover:text-black">Logout</button>
+                    <a href="{% url 'profile' %}" class="text-blue-600 hover:underline border-2 py-2 px-3 rounded-md border-green-300">View Profile</a>
                 </form>
             {% else %}
                 <a href="{% url 'sign-in' %}" class="py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600">Login</a>

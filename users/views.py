@@ -1,10 +1,14 @@
 from django.shortcuts import render,redirect,HttpResponse
-from users.forms import RegisterForm,LoginForm,AssignRoleForm,CreateGroupForm
+from users.forms import RegisterForm,LoginForm,AssignRoleForm,CreateGroupForm,EditProfileForm
 from django.contrib.auth import login,logout
 from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required,user_passes_test
+from django.views.generic import TemplateView
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 
 # Create your views here.
 
@@ -94,3 +98,52 @@ def group_list(request):
     groups = Group.objects.all()
 
     return render(request,'admin/group_list.html',{'groups':groups})
+
+
+
+
+class ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        context['username'] = user.username
+        context['email'] = user.email
+        context['name'] = user.get_full_name()
+
+        context['member_since'] = user.date_joined
+        context['last_login'] = user.last_login
+        return context
+    
+
+
+@login_required
+def profile_edit(request):
+    user = request.user
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # make sure this is your profile view name
+    else:
+        form = EditProfileForm(instance=user)
+    
+    return render(request, 'accounts/profile_edit.html', {'form': form})
+
+
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # important to prevent logout
+            return redirect('profile')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'accounts/change_password.html', {'form': form})
