@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q, Count
@@ -7,7 +8,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from events.models import Event, Category
 from .forms import EventForm, CategoryForm
-from django.views.generic import ListView,DetailView
+from django.views.generic import ListView,DetailView,CreateView,UpdateView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 # Group checkers (for RBAC)
 def is_user(user):
     return user.groups.filter(name='user').exists()
@@ -90,7 +92,19 @@ def event_create(request):
         form = EventForm()
     return render(request, 'events/event_form.html', {'form': form})
 
+class EventCreateView(PermissionRequiredMixin, CreateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'events/event_form.html'
+    success_url = reverse_lazy('event_list')
 
+    # PermissionRequiredMixin settings
+    permission_required = 'events.add_event'
+    login_url = 'no-permession'  # your custom no-permission page
+
+    def form_valid(self, form):
+        form.save()  # Explicit save
+        return super().form_valid(form)
 # Event update
 @permission_required('events.change_event', login_url='no-permession')
 def event_update(request, id):
@@ -104,7 +118,18 @@ def event_update(request, id):
         form = EventForm(instance=event)
     return render(request, 'events/event_form.html', {'form': form})
 
+class EventUpdateView(PermissionRequiredMixin, UpdateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'events/event_form.html'
+    success_url = reverse_lazy('event_list')
+    permission_required = 'events.change_event'
+    login_url = 'no-permession'
+    pk_url_kwarg = 'id'  # So it matches your URL param
 
+    def form_valid(self, form):
+        form.save()  # Explicit save
+        return super().form_valid(form)
 # Event delete
 @permission_required('events.delete_event', login_url='no-permession')
 def event_delete(request, id):
