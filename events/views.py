@@ -24,23 +24,6 @@ def home(request):
 
 
 # Event list with search/filter
-def event_list(request):
-    events = Event.objects.select_related('category').prefetch_related('participants').all()
-
-    search_query = request.GET.get('search', '')
-    if search_query:
-        events = events.filter(Q(name__icontains=search_query) | Q(location__icontains=search_query))
-
-    category_id = request.GET.get('category')
-    if category_id:
-        events = events.filter(category_id=category_id)
-
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    if start_date and end_date:
-        events = events.filter(date__range=[start_date, end_date])
-
-    return render(request, 'events/event_list.html', {'events': events})
 class EventListView(ListView):
     model = Event
     template_name = 'events/event_list.html'
@@ -67,10 +50,6 @@ class EventListView(ListView):
         return queryset
 
 # Event detail
-def event_detail(request, id):
-    event = get_object_or_404(Event.objects.select_related('category').prefetch_related('participants'), id=id)
-    return render(request, 'events/event_detail.html', {'event': event})
-
 class EventDetailView(DetailView):
     model = Event
     template_name = 'events/event_detail.html'
@@ -81,16 +60,6 @@ class EventDetailView(DetailView):
         return Event.objects.select_related('category').prefetch_related('participants')
 
 # Event create
-@permission_required('events.add_event', login_url='no-permession')
-def event_create(request):
-    if request.method == 'POST':
-        form = EventForm(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('event_list')
-    else:
-        form = EventForm()
-    return render(request, 'events/event_form.html', {'form': form})
 
 class EventCreateView(PermissionRequiredMixin, CreateView):
     model = Event
@@ -106,17 +75,6 @@ class EventCreateView(PermissionRequiredMixin, CreateView):
         form.save()  # Explicit save
         return super().form_valid(form)
 # Event update
-@permission_required('events.change_event', login_url='no-permession')
-def event_update(request, id):
-    event = get_object_or_404(Event, id=id)
-    if request.method == 'POST':
-        form = EventForm(request.POST, instance=event)
-        if form.is_valid():
-            form.save()
-            return redirect('event_list')
-    else:
-        form = EventForm(instance=event)
-    return render(request, 'events/event_form.html', {'form': form})
 
 class EventUpdateView(PermissionRequiredMixin, UpdateView):
     model = Event
@@ -220,17 +178,19 @@ def category_list(request):
 
 
 # Category create
-@permission_required('events.add_category', login_url='no-permession')
-def category_create(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('category_list')
-    else:
-        form = CategoryForm()
-    return render(request, 'events/category_form.html', {'form': form})
 
+class CategoryCreateView(PermissionRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'events/category_form.html'
+    success_url = reverse_lazy('category_list')
+
+    permission_required = 'events.add_category'
+    login_url = 'no-permession'
+
+    def form_valid(self, form):
+        form.save()  # Explicit form save as in FBV
+        return super().form_valid(form)
 
 # Category update
 @permission_required('events.change_category', login_url='no-permession')
